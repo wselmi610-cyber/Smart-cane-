@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_page">
+
+    <!-- ── TOP LAVENDER ACCENT BAR ── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/lavender_primary" />
+
+    <!-- ── HEADER ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <!-- Back arrow -->
+        <TextView
+            android:id="@+id/btnHistoryBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="@color/lavender_primary"
+            android:textSize="26sp"
+            android:paddingEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Go back to home screen button" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Trip History"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Trip count badge -->
+        <TextView
+            android:id="@+id/tvTripCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 trips"
+            android:textColor="@color/lavender_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_pill_lavender"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp" />
+
+    </LinearLayout>
+
+    <!-- ── STATUS BAR ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/bg_input"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/tvHistoryStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Say next, previous, delete, or clear all"
+            android:textColor="@color/status_listening"
+            android:textSize="13sp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tvHistoryListening"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎤 Listening..."
+            android:textColor="@color/teal_primary"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- ── MAIN TRIP CARD ── -->
+    <androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layoutTripCard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="@color/bg_card"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Left lavender accent bar + trip index -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingBottom="16dp">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="32dp"
+                    android:background="@color/lavender_primary"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTripIndex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trip 1 of 5"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <!-- Destination -->
+            <TextView
+                android:id="@+id/tvTripDestination"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="📍 Avenue Habib Bourguiba"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/tvTripDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Today at 14:30"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:paddingBottom="20dp" />
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/border_subtle"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Navigate Again -->
+            <Button
+                android:id="@+id/btnNavigateAgain"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="10dp"
+                android:text="🧭  Navigate Here Again"
+                android:textColor="@color/teal_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/bg_teal_tint"
+                android:contentDescription="Navigate to this destination again" />
+
+            <!-- Delete Trip -->
+            <Button
+                android:id="@+id/btnDeleteTrip"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="🗑  Delete This Trip"
+                android:textColor="@color/status_danger"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/bg_danger_tint"
+                android:contentDescription="Delete this trip from history" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- ── EMPTY STATE ── -->
+    <LinearLayout
+        android:id="@+id/tvEmptyHistory"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🗺️"
+            android:textSize="56sp"
+            android:paddingBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No trips yet"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Navigate somewhere first"
+            android:textColor="@color/text_disabled"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- ── PREV / NEXT ROW ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp">
+
+        <Button
+            android:id="@+id/btnPrevTrip"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="◀  Previous"
+            android:textColor="@color/lavender_primary"
+            android:textSize="15sp"
+            android:backgroundTint="@color/bg_elevated"
+            android:contentDescription="Previous trip button" />
+
+        <Button
+            android:id="@+id/btnNextTrip"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Next  ▶"
+            android:textColor="@color/lavender_primary"
+            android:textSize="15sp"
+            android:backgroundTint="@color/bg_elevated"
+            android:contentDescription="Next trip button" />
+
+    </LinearLayout>
+
+    <!-- ── CLEAR ALL ── -->
+    <Button
+        android:id="@+id/btnClearAll"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="🗑  Clear All History"
+        android:textColor="@color/status_danger"
+        android:textSize="15sp"
+        android:backgroundTint="@color/bg_danger_tint"
+        android:contentDescription="Clear all trip history button" />
+
+</LinearLayout>

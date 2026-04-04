@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Smart Cane</string>
+
+    <!-- Home Screen -->
+    <string name="btn_navigate">Navigate</string>
+    <string name="btn_family">Family Contacts</string>
+    <string name="btn_history">History</string>
+    <string name="btn_battery">Battery Level</string>
+
+    <!-- Accessibility descriptions -->
+    <string name="cd_navigate_btn">Navigate button. Opens voice navigation.</string>
+    <string name="cd_family_btn">Family contacts button. Opens your contact list.</string>
+    <string name="cd_history_btn">History button. Opens your trip history.</string>
+    <string name="cd_battery_btn">Battery level button. Reads battery status.</string>
+
+    <!-- TTS Messages -->
+    <string name="tts_home_ready">Smart Cane ready. Say Navigate, Call family, Check battery, or History.</string>
+    <string name="tts_welcome_back">Welcome back. You are on the home screen.</string>
+    <string name="tts_cane_connected">Smart Cane connected.</string>
+    <string name="tts_cane_disconnected">Cane disconnected. Please check your connection.</string>
+    <string name="tts_sos_sent">SOS alert sent to family.</string>
+    <string name="tts_no_speech">I didn\'t hear anything. Please try again.</string>
+</resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#1A1A1A"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Contact icon -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="👤"
+        android:textSize="32sp"
+        android:paddingEnd="16dp" />
+
+    <!-- Name and number -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvContactName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvContactNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+216 XX XXX XXX"
+            android:textColor="#AAAAAA"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <!-- Call Button -->
+    <Button
+        android:id="@+id/btnCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📞"
+        android:textSize="24sp"
+        android:backgroundTint="#00AA00"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:contentDescription="Call this contact" />
+
+    <!-- Delete Button -->
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="🗑"
+        android:textSize="20sp"
+        android:backgroundTint="#AA0000"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:contentDescription="Delete this contact" />
+
+</LinearLayout>

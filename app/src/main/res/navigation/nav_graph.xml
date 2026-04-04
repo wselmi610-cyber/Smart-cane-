@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.smartcane.app.ui.home.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_home_to_navigation"
+            app:destination="@id/navigationFragment" />
+        <action
+            android:id="@+id/action_home_to_family"
+            app:destination="@id/familyFragment" />
+        <action
+            android:id="@+id/action_home_to_history"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_home_to_battery"
+            app:destination="@id/batteryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigationFragment"
+        android:name="com.smartcane.app.ui.navigation.NavigationFragment"
+        android:label="Navigation" />
+
+    <fragment
+        android:id="@+id/familyFragment"
+        android:name="com.smartcane.app.ui.family.FamilyFragment"
+        android:label="Family Contacts" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.smartcane.app.ui.history.HistoryFragment"
+        android:label="History" />
+
+    <fragment
+        android:id="@+id/batteryFragment"
+        android:name="com.smartcane.app.ui.battery.BatteryFragment"
+        android:label="Battery" />
+
+</navigation>

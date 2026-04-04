@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Backgrounds -->
+    <color name="bg_page">#0D1117</color>
+    <color name="bg_card">#161B22</color>
+    <color name="bg_elevated">#21262D</color>
+    <color name="bg_input">#2D333B</color>
+
+    <!-- Teal (Navigate) -->
+    <color name="teal_primary">#00C9A7</color>
+    <color name="teal_light">#00E5C2</color>
+    <color name="teal_dark">#009B80</color>
+    <color name="bg_teal_icon">#1A3D36</color>
+    <color name="bg_teal_tint">#001A14</color>
+
+    <!-- Amber (Family Contacts) -->
+    <color name="amber_primary">#F4A261</color>
+    <color name="amber_light">#FFB830</color>
+    <color name="amber_dark">#D4813A</color>
+    <color name="bg_amber_icon">#3D2A00</color>
+    <color name="bg_amber_tint">#1F1500</color>
+
+    <!-- Lavender (History) -->
+    <color name="lavender_primary">#9B8EC4</color>
+    <color name="lavender_light">#B8ACDC</color>
+    <color name="bg_lavender_icon">#2A1F3D</color>
+
+    <!-- Blue (Battery) -->
+    <color name="blue_primary">#4FC3F7</color>
+    <color name="blue_light">#81D4FA</color>
+    <color name="bg_blue_icon">#0D2A3D</color>
+    <color name="bg_blue_tint">#0D1F2D</color>
+
+    <!-- Text -->
+    <color name="text_primary">#E6EDF3</color>
+    <color name="text_secondary">#8B949E</color>
+    <color name="text_disabled">#484F58</color>
+    <color name="text_on_accent">#0D1117</color>
+
+    <!-- Status -->
+    <color name="status_success">#3FB950</color>
+    <color name="status_warning">#D29922</color>
+    <color name="status_danger">#F85149</color>
+    <color name="status_charging">#58A6FF</color>
+    <color name="status_listening">#FFC947</color>
+    <color name="status_critical">#FF6B6B</color>
+
+    <!-- Card tints -->
+    <color name="bg_success_tint">#1A3A2A</color>
+    <color name="bg_danger_tint">#3A1A1A</color>
+
+    <!-- Borders -->
+    <color name="border_subtle">#30363D</color>
+    <color name="border_active">#00C9A7</color>
+</resources>
