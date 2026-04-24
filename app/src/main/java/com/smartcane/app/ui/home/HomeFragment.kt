@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.smartcane.app.R
 import com.smartcane.app.SmartCaneApplication
 import com.smartcane.app.databinding.FragmentHomeBinding
+import com.smartcane.app.managers.AppStateManager
 import com.smartcane.app.managers.SpeechPriority
 import com.smartcane.app.managers.SpeechResult
 
@@ -42,18 +43,45 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         intentionalNavigation = false
-        audio.speak(
-            getString(R.string.tts_home_ready),
-            SpeechPriority.NORMAL
-        )
-        // Delay listening slightly to let TTS start first
+        audio.stopSpeaking()
+
+        val state = app.appStateManager
+        val visits = state.getVisitCount(AppStateManager.Screen.HOME)
+        state.recordVisit(AppStateManager.Screen.HOME)
+
+        when (visits) {
+            0 -> {
+                // Very first time home opens this session
+                if (state.isFirstEverOpen()) {
+                    state.incrementTotalOpens()
+                    audio.speak(
+                        "Welcome to Smart Cane. " +
+                                "Say Navigate, Family contacts, History, or Battery.",
+                        SpeechPriority.NORMAL
+                    )
+                } else {
+                    audio.speak(
+                        "Smart Cane ready. " +
+                                "Say Navigate, Family, History, or Battery.",
+                        SpeechPriority.NORMAL
+                    )
+                }
+            }
+            1 -> {
+                // Second return this session — short
+                audio.speak("Ready.", SpeechPriority.NORMAL)
+            }
+            else -> {
+                // Third return+ — completely silent
+            }
+        }
+
         binding.root.postDelayed({
             if (isAdded && !intentionalNavigation) {
                 startVoiceListening()
             }
-        }, 1500)
+        }, if (visits == 0) 1500L else 600L)
     }
-
     override fun onPause() {
         super.onPause()
         // Stop everything cleanly when leaving screen
@@ -122,6 +150,14 @@ class HomeFragment : Fragment() {
         }
         binding.btnBattery.setOnClickListener {
             stopAndNavigate { goToBattery() }
+        }
+
+        // Fix B — tap anywhere on screen activates mic
+        binding.root.setOnClickListener {
+            if (!speech.isListening()) {
+                audio.stopSpeaking()
+                startVoiceListening()
+            }
         }
     }
 

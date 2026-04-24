@@ -109,7 +109,11 @@ class AudioFeedbackManager(
         tts?.stop()
     }
 
-    fun stopSpeaking() { clearQueue(); isSpeaking = false }
+    fun stopSpeaking() {
+        clearQueue()
+        tts?.stop()
+        isSpeaking = false
+    }
     fun isSpeaking(): Boolean = isSpeaking
     fun setSpeechRate(rate: Float) { tts?.setSpeechRate(rate) }
 

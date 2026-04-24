@@ -14,6 +14,7 @@ import com.smartcane.app.R
 import com.smartcane.app.SmartCaneApplication
 import com.smartcane.app.data.model.Contact
 import com.smartcane.app.databinding.FragmentFamilyBinding
+import com.smartcane.app.managers.AppStateManager
 import com.smartcane.app.managers.SpeechPriority
 import kotlinx.coroutines.launch
 
@@ -67,12 +68,16 @@ class FamilyFragment : Fragment() {
 
     private fun loadContactsThenAnnounce() {
         viewLifecycleOwner.lifecycleScope.launch {
-            // Get contacts directly (one-shot) then announce
             val contacts = app.contactRepository.getAllContactsOnce()
             currentContacts = contacts
             contactAdapter.submitList(contacts)
             updateEmptyState(contacts.isEmpty())
-            announceScreenAndListen()
+
+            val state = app.appStateManager
+            val visits = state.getVisitCount(AppStateManager.Screen.FAMILY)
+            state.recordVisit(AppStateManager.Screen.FAMILY)
+
+            announceScreenAndListen(visits)
         }
     }
 
@@ -121,17 +126,29 @@ class FamilyFragment : Fragment() {
     // Announce Screen
     // ─────────────────────────────────────────────────────────────────────
 
-    private fun announceScreenAndListen() {
-        val message = if (currentContacts.isEmpty()) {
-            "Family contacts. No contacts saved. Say Add contact."
-        } else {
-            val names = currentContacts.joinToString(", ") { it.name }
-            "Family contacts. ${currentContacts.size} contact" +
-                    "${if (currentContacts.size > 1) "s" else ""}: $names. " +
-                    "Say a name to call, Add contact to add, " +
-                    "or Delete and a name to remove."
+    private fun announceScreenAndListen(visits: Int = 0) {
+        val message = when {
+            currentContacts.isEmpty() ->
+                if (visits == 0) "Family contacts. No contacts saved. Say Add contact."
+                else null
+
+            visits == 0 -> {
+                // First time — full announcement with names
+                val names = currentContacts.joinToString(", ") { it.name }
+                "Family contacts. ${currentContacts.size} " +
+                        "contact${if (currentContacts.size > 1) "s" else ""}: $names. " +
+                        "Say a name to call, Add contact, or Delete and a name."
+            }
+
+            visits == 1 -> {
+                // Second time — just count
+                "${currentContacts.size} contact${if (currentContacts.size > 1) "s" else ""}."
+            }
+
+            else -> null // Third time+ — silent, just listen
         }
-        audio.speak(message, SpeechPriority.NORMAL)
+
+        message?.let { audio.speak(it, SpeechPriority.NORMAL) }
         listenForCommand()
     }
 
@@ -450,76 +467,6 @@ class FamilyFragment : Fragment() {
         result = result.replace(Regex("\\bnine\\b"), "9")
         result = result.replace(Regex("\\boh\\b"), "0")
 
-        // ── French ────────────────────────────────────────────────────────
-        result = result.replace(Regex("\\bzéro\\b"), "0")
-        result = result.replace(Regex("\\bzero\\b"), "0")
-        result = result.replace(Regex("\\bun\\b"), "1")
-        result = result.replace(Regex("\\bune\\b"), "1")
-        result = result.replace(Regex("\\bdeux\\b"), "2")
-        result = result.replace(Regex("\\btrois\\b"), "3")
-        result = result.replace(Regex("\\bquatre\\b"), "4")
-        result = result.replace(Regex("\\bcinq\\b"), "5")
-        result = result.replace(Regex("\\bsix\\b"), "6")
-        result = result.replace(Regex("\\bsept\\b"), "7")
-        result = result.replace(Regex("\\bhuit\\b"), "8")
-        result = result.replace(Regex("\\bneuf\\b"), "9")
-
-        // ── French teens & tens (common in Tunisian phone numbers) ────────
-        result = result.replace(Regex("\\bvingt\\b"), "20")
-        result = result.replace(Regex("\\btrente\\b"), "30")
-        result = result.replace(Regex("\\bquarante\\b"), "40")
-        result = result.replace(Regex("\\bcinquante\\b"), "50")
-        result = result.replace(Regex("\\bsoixante\\b"), "60")
-        result = result.replace(Regex("\\bsoixante-dix\\b"), "70")
-        result = result.replace(Regex("\\bsoixante dix\\b"), "70")
-        result = result.replace(Regex("\\bquatre-vingt\\b"), "80")
-        result = result.replace(Regex("\\bquatre vingt\\b"), "80")
-        result = result.replace(Regex("\\bquatre-vingt-dix\\b"), "90")
-        result = result.replace(Regex("\\bquatre vingt dix\\b"), "90")
-        result = result.replace(Regex("\\bdix\\b"), "10")
-        result = result.replace(Regex("\\bonze\\b"), "11")
-        result = result.replace(Regex("\\bdouze\\b"), "12")
-        result = result.replace(Regex("\\btreize\\b"), "13")
-        result = result.replace(Regex("\\bquatorze\\b"), "14")
-        result = result.replace(Regex("\\bquinze\\b"), "15")
-        result = result.replace(Regex("\\bseize\\b"), "16")
-
-        // ── Arabic (transliterated) ───────────────────────────────────────
-        result = result.replace(Regex("\\bsifr\\b"), "0")
-        result = result.replace(Regex("\\bwahid\\b"), "1")
-        result = result.replace(Regex("\\bwahed\\b"), "1")
-        result = result.replace(Regex("\\bwahd\\b"), "1")
-        result = result.replace(Regex("\\bithnan\\b"), "2")
-        result = result.replace(Regex("\\bitnin\\b"), "2")
-        result = result.replace(Regex("\\bzouz\\b"), "2")  // Tunisian dialect
-        result = result.replace(Regex("\\bthalatha\\b"), "3")
-        result = result.replace(Regex("\\btlatha\\b"), "3") // Tunisian dialect
-        result = result.replace(Regex("\\barba\\b"), "4")
-        result = result.replace(Regex("\\barba'a\\b"), "4")
-        result = result.replace(Regex("\\bkhamsa\\b"), "5")
-        result = result.replace(Regex("\\bkhamseh\\b"), "5")
-        result = result.replace(Regex("\\bsitta\\b"), "6")
-        result = result.replace(Regex("\\bsetta\\b"), "6")
-        result = result.replace(Regex("\\bsab'a\\b"), "7")
-        result = result.replace(Regex("\\bsab3a\\b"), "7")
-        result = result.replace(Regex("\\bsba3\\b"), "7")   // Tunisian dialect
-        result = result.replace(Regex("\\bthamanya\\b"), "8")
-        result = result.replace(Regex("\\btmanya\\b"), "8") // Tunisian dialect
-        result = result.replace(Regex("\\btis'a\\b"), "9")
-        result = result.replace(Regex("\\btis3a\\b"), "9")
-        result = result.replace(Regex("\\btes3a\\b"), "9")  // Tunisian dialect
-
-        // ── Arabic native digits (in case recognizer returns them) ────────
-        result = result.replace("٠", "0")
-        result = result.replace("١", "1")
-        result = result.replace("٢", "2")
-        result = result.replace("٣", "3")
-        result = result.replace("٤", "4")
-        result = result.replace("٥", "5")
-        result = result.replace("٦", "6")
-        result = result.replace("٧", "7")
-        result = result.replace("٨", "8")
-        result = result.replace("٩", "9")
 
         // ── Keep only digits and + ─────────────────────────────────────────
         val digitsOnly = result.replace(Regex("[^0-9+]"), "")

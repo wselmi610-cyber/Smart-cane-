@@ -4,6 +4,7 @@ import android.app.Application
 import com.smartcane.app.data.db.AppDatabase
 import com.smartcane.app.data.repository.ContactRepository
 import com.smartcane.app.data.repository.TripHistoryRepository
+import com.smartcane.app.managers.AppStateManager
 import com.smartcane.app.managers.AudioFeedbackManager
 import com.smartcane.app.managers.SpeechManager
 import com.smartcane.app.managers.TalkBackDetector
@@ -20,6 +21,8 @@ class SmartCaneApplication : Application() {
     val database by lazy { AppDatabase.getDatabase(this) }
     val contactRepository by lazy { ContactRepository(database.contactDao()) }
     val tripHistoryRepository by lazy { TripHistoryRepository(database.tripHistoryDao()) }
+
+    val appStateManager by lazy { AppStateManager(this) }
 
     override fun onCreate() {
         super.onCreate()

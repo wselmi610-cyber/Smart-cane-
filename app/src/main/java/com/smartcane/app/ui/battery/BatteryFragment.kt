@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.smartcane.app.R
 import com.smartcane.app.SmartCaneApplication
 import com.smartcane.app.databinding.FragmentBatteryBinding
+import com.smartcane.app.managers.AppStateManager
 import com.smartcane.app.managers.SpeechPriority
 
 class BatteryFragment : Fragment() {
@@ -62,16 +63,20 @@ class BatteryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Register battery receiver
+        audio.stopSpeaking()
+
         requireContext().registerReceiver(
             batteryReceiver,
             IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         )
-        // Read battery immediately and announce
-        readAndUpdateBattery(announce = true)
-        // Start auto-refresh
+
+        val state = app.appStateManager
+        val visits = state.getVisitCount(AppStateManager.Screen.BATTERY)
+        state.recordVisit(AppStateManager.Screen.BATTERY)
+
+        // Only announce on first and second visit this session
+        readAndUpdateBattery(announce = visits < 2)
         refreshHandler.postDelayed(refreshRunnable, REFRESH_INTERVAL)
-        // Start voice listening
         startVoiceListening()
     }
 
@@ -90,16 +95,10 @@ class BatteryFragment : Fragment() {
     // ─────────────────────────────────────────────────────────────────────
 
     private fun readAndUpdateBattery(announce: Boolean) {
-        if (!isAdded) return
-
-        // Phone battery
-        val batteryIntent = requireContext().registerReceiver(
-            null,
-            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        )
-        batteryIntent?.let { updatePhoneBatteryFromIntent(it, announce) }
-
-        // Cane battery
+        val intent = requireContext().registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        if (intent != null) {
+            updatePhoneBatteryFromIntent(intent, announce)
+        }
         updateCaneBattery(announce)
     }
 
@@ -143,15 +142,6 @@ class BatteryFragment : Fragment() {
 
     private fun updateCaneBattery(announce: Boolean) {
         if (!isAdded) return
-
-        val caneLevel = app.audioFeedbackManager.let {
-            // Get from CaneMonitorService if connected
-            (requireActivity().application as SmartCaneApplication)
-                .let { application ->
-                    // Access cane battery from service
-                    -1 // Will be updated via service callback
-                }
-        }
 
         // Check if cane service is available via MainActivity
         val mainActivity = activity
@@ -210,16 +200,23 @@ class BatteryFragment : Fragment() {
         phoneStatus: String,
         isCharging: Boolean
     ) {
-        val chargingText = if (isCharging) ", currently charging" else ""
-        val caneText = getCaneStatusText()
+        val visits = app.appStateManager
+            .getVisitCount(AppStateManager.Screen.BATTERY)
 
-        audio.speak(
-            "Battery status. " +
-                    "Phone battery: $phonePercent percent. $phoneStatus$chargingText. " +
-                    "$caneText " +
-                    "Say refresh to update, or back to go home.",
-            SpeechPriority.NORMAL
-        )
+        val message = when {
+            visits <= 1 -> {
+                // First time — full
+                val chargingText = if (isCharging) ", charging" else ""
+                val caneText = getCaneStatusText()
+                "Phone: $phonePercent percent. $phoneStatus$chargingText. $caneText"
+            }
+            else -> {
+                // Repeat — just the number
+                "Phone $phonePercent percent."
+            }
+        }
+
+        audio.speak(message, SpeechPriority.NORMAL)
     }
 
     private fun getCaneStatusText(): String {

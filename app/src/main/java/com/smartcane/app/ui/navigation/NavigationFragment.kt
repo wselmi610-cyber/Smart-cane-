@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.smartcane.app.R
 import com.smartcane.app.SmartCaneApplication
 import com.smartcane.app.databinding.FragmentNavigationBinding
+import com.smartcane.app.managers.AppStateManager
 import com.smartcane.app.managers.SpeechPriority
 import com.smartcane.app.managers.SpeechResult
 import com.smartcane.app.service.LocationHelper
@@ -49,12 +50,11 @@ class NavigationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        audio.stopSpeaking() // Fix C
 
         if (mapsLaunched) {
-            // User returned from Google Maps
             handleReturnFromMaps()
         } else {
-            // Fresh open — ask for destination
             startNavigationFlow()
         }
     }
@@ -73,20 +73,36 @@ class NavigationFragment : Fragment() {
 
     private fun startNavigationFlow() {
         mapsLaunched = false
-        setStatus("Preparing...", "#FFFF00")
-        hideDestination()
         showListeningIndicator(false)
 
-        // Speak prompt then start listening
-        audio.speak("Where do you want to go?", SpeechPriority.NORMAL)
+        val state = app.appStateManager
+        val visits = state.getVisitCount(AppStateManager.Screen.NAVIGATION)
+        state.recordVisit(AppStateManager.Screen.NAVIGATION)
+
+        val prompt = when (visits) {
+            0    -> "Where do you want to go?"  // First time
+            1    -> "Where to?"                  // Second time
+            else -> null                         // Third time+ — silent
+        }
+
+        val delay = if (prompt != null) {
+            prompt.let { audio.speak(it, SpeechPriority.NORMAL) }
+            1500L
+        } else {
+            500L
+        }
+
+        setStatus(
+            if (prompt != null) "Listening..." else "🎤",
+            "#FFFF00"
+        )
 
         binding.root.postDelayed({
             if (isAdded && !mapsLaunched) {
                 showListeningIndicator(true)
-                setStatus("Listening for destination", "#FFFF00")
                 startListeningForDestination()
             }
-        }, 2000)
+        }, delay)
     }
 
     private fun startListeningForDestination() {
@@ -183,18 +199,21 @@ class NavigationFragment : Fragment() {
 
     private fun handleReturnFromMaps() {
         mapsLaunched = false
-        setStatus("Navigation complete", "#00FF00")
+        setStatus("Welcome back", "#00FF00")
         showListeningIndicator(false)
 
-        // Speak welcome back then go home
-        audio.speak(
-            getString(R.string.tts_welcome_back),
-            SpeechPriority.NORMAL
-        )
+        val visits = app.appStateManager
+            .getVisitCount(AppStateManager.Screen.NAVIGATION)
+
+        when {
+            visits <= 1 -> audio.speak("Welcome back.", SpeechPriority.NORMAL)
+            visits == 2 -> audio.speak("Home.", SpeechPriority.NORMAL)
+            else        -> { /* silent */ }
+        }
 
         binding.root.postDelayed({
             if (isAdded) goBackHome()
-        }, 3000)
+        }, if (visits <= 2) 1500L else 500L)
     }
 
     // ─────────────────────────────────────────────────────────────────────
