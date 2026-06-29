@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
@@ -20,12 +21,21 @@
         <action
             android:id="@+id/action_home_to_battery"
             app:destination="@id/batteryFragment" />
+        <action
+            android:id="@+id/action_home_to_reminder"
+            app:destination="@id/reminderFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigationFragment"
         android:name="com.smartcane.app.ui.navigation.NavigationFragment"
         android:label="Navigation" />
+
+    <fragment
+        android:id="@+id/reminderFragment"
+        android:name="com.smartcane.app.ui.reminder.ReminderFragment"
+        android:label="Reminders"
+        tools:layout="@layout/fragment_reminder"/>
 
     <fragment
         android:id="@+id/familyFragment"

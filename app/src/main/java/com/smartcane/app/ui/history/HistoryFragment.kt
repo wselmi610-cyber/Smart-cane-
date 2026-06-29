@@ -74,37 +74,24 @@ class HistoryFragment : Fragment() {
     }
 
     private fun announceCurrentState() {
-        val state = app.appStateManager
-        val visits = state.getVisitCount(AppStateManager.Screen.HISTORY)
-        state.recordVisit(AppStateManager.Screen.HISTORY)
-
         if (trips.isEmpty()) {
-            if (visits == 0) audio.speak("No trips yet.", SpeechPriority.NORMAL)
+            audio.speak(
+                "No trips yet. Navigate somewhere first.",
+                SpeechPriority.NORMAL
+            )
             listenForCommands()
             return
         }
 
         val trip = trips[currentIndex]
-
-        val message = when (visits) {
-            0 -> {
-                // First time — full
-                "Trip history. ${trips.size} trip${if (trips.size > 1) "s" else ""}. " +
-                        "Trip ${currentIndex + 1}: ${trip.destination}. " +
-                        "${formatDate(trip.timestamp)}. " +
-                        "Say next, previous, navigate again, delete, or clear all."
-            }
-            1 -> {
-                // Second time — medium
-                "Trip ${currentIndex + 1} of ${trips.size}. ${trip.destination}."
-            }
-            else -> {
-                // Third time+ — destination only
-                trip.destination
-            }
-        }
-
-        audio.speak(message, SpeechPriority.NORMAL)
+        val dateStr = formatDate(trip.timestamp)
+        audio.speak(
+            "Trip history. ${trips.size} trip${if (trips.size > 1) "s" else ""}. " +
+                    "Trip ${currentIndex + 1} of ${trips.size}. " +
+                    "Destination: ${trip.destination}. $dateStr. " +
+                    "Say next, previous, navigate again, delete, clear all, or back.",
+            SpeechPriority.NORMAL
+        )
         listenForCommands()
     }
     // ─────────────────────────────────────────────────────────────────────

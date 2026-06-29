@@ -63,23 +63,14 @@ class BatteryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        audio.stopSpeaking()
-
         requireContext().registerReceiver(
             batteryReceiver,
             IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         )
-
-        val state = app.appStateManager
-        val visits = state.getVisitCount(AppStateManager.Screen.BATTERY)
-        state.recordVisit(AppStateManager.Screen.BATTERY)
-
-        // Only announce on first and second visit this session
-        readAndUpdateBattery(announce = visits < 2)
+        readAndUpdateBattery(announce = true)
         refreshHandler.postDelayed(refreshRunnable, REFRESH_INTERVAL)
         startVoiceListening()
     }
-
     override fun onPause() {
         super.onPause()
         speech.stopListening()

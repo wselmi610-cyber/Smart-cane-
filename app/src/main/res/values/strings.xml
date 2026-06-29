@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Smart Cane</string>
-
+    <string name="accessibility_service_description">
+    Smart Cane uses accessibility to open the app when Hey Cane is detected.
+</string>
     <!-- Home Screen -->
     <string name="btn_navigate">Navigate</string>
     <string name="btn_family">Family Contacts</string>

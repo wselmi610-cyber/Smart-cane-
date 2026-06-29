@@ -72,12 +72,7 @@ class FamilyFragment : Fragment() {
             currentContacts = contacts
             contactAdapter.submitList(contacts)
             updateEmptyState(contacts.isEmpty())
-
-            val state = app.appStateManager
-            val visits = state.getVisitCount(AppStateManager.Screen.FAMILY)
-            state.recordVisit(AppStateManager.Screen.FAMILY)
-
-            announceScreenAndListen(visits)
+            announceScreenAndListen()
         }
     }
 
@@ -111,13 +106,21 @@ class FamilyFragment : Fragment() {
             goBackHome()
         }
     }
-
+    private fun updateContactCount(count: Int) {
+        if (!isAdded) return
+        binding.tvContactCount.text = when (count) {
+            0    -> "No contacts"
+            1    -> "1 contact"
+            else -> "$count contacts"
+        }
+    }
     private fun observeContacts() {
         viewLifecycleOwner.lifecycleScope.launch {
             app.contactRepository.allContacts.collect { contacts ->
                 currentContacts = contacts
                 contactAdapter.submitList(contacts)
                 updateEmptyState(contacts.isEmpty())
+                updateContactCount(contacts.size) // ← add this
             }
         }
     }
@@ -126,29 +129,17 @@ class FamilyFragment : Fragment() {
     // Announce Screen
     // ─────────────────────────────────────────────────────────────────────
 
-    private fun announceScreenAndListen(visits: Int = 0) {
-        val message = when {
-            currentContacts.isEmpty() ->
-                if (visits == 0) "Family contacts. No contacts saved. Say Add contact."
-                else null
-
-            visits == 0 -> {
-                // First time — full announcement with names
-                val names = currentContacts.joinToString(", ") { it.name }
-                "Family contacts. ${currentContacts.size} " +
-                        "contact${if (currentContacts.size > 1) "s" else ""}: $names. " +
-                        "Say a name to call, Add contact, or Delete and a name."
-            }
-
-            visits == 1 -> {
-                // Second time — just count
-                "${currentContacts.size} contact${if (currentContacts.size > 1) "s" else ""}."
-            }
-
-            else -> null // Third time+ — silent, just listen
+    private fun announceScreenAndListen() {
+        val message = if (currentContacts.isEmpty()) {
+            "Family contacts. No contacts saved. Say Add contact."
+        } else {
+            val names = currentContacts.joinToString(", ") { it.name }
+            "Family contacts. ${currentContacts.size} contact" +
+                    "${if (currentContacts.size > 1) "s" else ""}: $names. " +
+                    "Say a name to call, Add contact to add, " +
+                    "or Delete and a name to remove."
         }
-
-        message?.let { audio.speak(it, SpeechPriority.NORMAL) }
+        audio.speak(message, SpeechPriority.NORMAL)
         listenForCommand()
     }
 
@@ -244,14 +235,17 @@ class FamilyFragment : Fragment() {
     private fun handleNumberInput(spokenNumber: String) {
         val digitsOnly = convertSpokenNumberToDigits(spokenNumber)
 
-        if (digitsOnly.length < 6) {
+        if (digitsOnly.length < 8) {
             audio.speak(
                 "I heard: $spokenNumber. " +
                         "Got ${digitsOnly.length} digit${if (digitsOnly.length == 1) "" else "s"}. " +
-                        "Need at least 6. Please say the number again.",
+                        "Need at least 8. Please say the number again.",
                 SpeechPriority.NORMAL
             )
-            listenForCommand()
+            // Delay before reopening mic — prevents cut-off
+            binding.root.postDelayed({
+                if (isAdded) listenForCommand()
+            }, 1000L)
             return
         }
 

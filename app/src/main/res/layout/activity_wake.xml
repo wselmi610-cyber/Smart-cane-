@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wakeRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0D1117"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Cane icon -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🦯"
+        android:textSize="80sp"
+        android:gravity="center"
+        android:paddingBottom="32dp" />
+
+    <!-- App name -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Smart Cane"
+        android:textColor="#00C9A7"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="16dp" />
+
+    <!-- Instruction -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TAP ANYWHERE TO OPEN"
+        android:textColor="#E6EDF3"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="48dp" />
+
+    <!-- Auto open countdown hint -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Opens automatically in 3 seconds..."
+        android:textColor="#8B949E"
+        android:textSize="14sp"
+        android:gravity="center" />
+
+</LinearLayout>
